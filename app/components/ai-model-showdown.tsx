@@ -16,10 +16,10 @@ interface DataItem {
     pricePerMillionTokens: number;
     inputPrice: number;
     outputPrice: number;
-    outputSpeed: number;
-    latency: number;
+    outputSpeed: number | null;
+    latency: number | null;
     qualityIndex: number | null;
-  }
+}
 
   const data: DataItem[] = [
     { id: "1", creator: "OpenAI", provider: "OpenAI", model: "GPT-4", name: "o1-preview", contextWindow: 128000, pricePerMillionTokens: 26250, inputPrice: 15000, outputPrice: 60000, outputSpeed: 30.9, latency: 32.62, qualityIndex: null },
@@ -254,9 +254,11 @@ const findWinner = () => {
       }, null as (DataItem & { adjustedPrice?: number }) | null)
     } else {
       winnerItem = data.filter(item => item.model === selectedModel).reduce((max, item) => {
-        const currentValue = item[selectedSpeedCriteria as keyof DataItem] as number
-        const maxValue = max ? max[selectedSpeedCriteria as keyof DataItem] as number : -Infinity
-        return !max || currentValue > maxValue ? item : max
+        const currentValue = item[selectedSpeedCriteria as keyof DataItem] as number | null
+        const maxValue = max ? max[selectedSpeedCriteria as keyof DataItem] as number | null : null
+        if (currentValue === null) return max
+        if (maxValue === null) return item
+        return currentValue > maxValue ? item : max
       }, null as DataItem | null)
     }
     
@@ -284,7 +286,7 @@ const findWinner = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
-          LLM API Showdown! 🏆
+          LLM API Showdown ! 🏆
         </motion.h1>
         <div className="space-y-6 mb-8">
           <Select value={selectedModel} onValueChange={setSelectedModel}>
@@ -365,12 +367,16 @@ const findWinner = () => {
     <p className="text-4xl font-bold mb-2 text-purple-800">{winner.provider}</p>
     <p className="text-xl mb-4 text-gray-600">{winner.model}</p>
     <p className="text-2xl font-bold text-pink-600">
-      {selectedCriteria === 'pricePerMillionTokens' 
-        ? `$${((winner.adjustedPrice || winner.pricePerMillionTokens) / 1000).toFixed(2)} per million tokens (${selectedPriceRatio} ratio)`
-        : selectedSpeedCriteria === 'outputSpeed'
-          ? `${winner.outputSpeed.toFixed(1)} tokens/second`
-          : `${winner.latency.toFixed(2)} seconds latency`}
-    </p>
+  {selectedCriteria === 'pricePerMillionTokens' 
+    ? `$${((winner.adjustedPrice || winner.pricePerMillionTokens) / 1000).toFixed(2)} per million tokens (${selectedPriceRatio} ratio)`
+    : selectedSpeedCriteria === 'outputSpeed'
+      ? winner.outputSpeed !== null
+        ? `${winner.outputSpeed.toFixed(1)} tokens/second`
+        : 'N/A'
+      : winner.latency !== null
+        ? `${winner.latency.toFixed(2)} seconds latency`
+        : 'N/A'}
+</p>
   </motion.div>
 )}
         </AnimatePresence>
