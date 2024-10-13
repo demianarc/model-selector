@@ -1,11 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import confetti from 'canvas-confetti'
-import { Sparkles } from 'lucide-react'
 
-const data = [
+interface DataItem {
+    id: string;
+    creator: string;
+    provider: string;
+    model: string;
+    name: string;
+    contextWindow: number;
+    pricePerMillionTokens: number;
+    inputPrice: number;
+    outputPrice: number;
+    outputSpeed: number;
+    latency: number;
+    qualityIndex: number | null;
+  }
+
+  const data: DataItem[] = [
     { id: "1", creator: "OpenAI", provider: "OpenAI", model: "GPT-4", name: "o1-preview", contextWindow: 128000, pricePerMillionTokens: 26250, inputPrice: 15000, outputPrice: 60000, outputSpeed: 30.9, latency: 32.62, qualityIndex: null },
     { id: "2", creator: "OpenAI", provider: "OpenAI", model: "GPT-4", name: "o1-mini", contextWindow: 128000, pricePerMillionTokens: 5250, inputPrice: 3000, outputPrice: 12000, outputSpeed: 70.2, latency: 14.58, qualityIndex: null },
     { id: "3", creator: "OpenAI", provider: "OpenAI", model: "GPT-4", name: "GPT-4o", contextWindow: 128000, pricePerMillionTokens: 4380, inputPrice: 2500, outputPrice: 10000, outputSpeed: 124.2, latency: 0.42, qualityIndex: 100 },
@@ -199,18 +215,18 @@ const data = [
     { id: "191", creator: "Mistral AI", provider: "Together.ai", model: "Mistral 7B", name: "Mistral 7B", contextWindow: 8000, pricePerMillionTokens: 200, inputPrice: 200, outputPrice: 200, outputSpeed: 126.2, latency: 0.32, qualityIndex: 40 },
     { id: "192", creator: "Mistral AI", provider: "Mistral", model: "Codestral", name: "Codestral", contextWindow: 33000, pricePerMillionTokens: 300, inputPrice: 200, outputPrice: 600, outputSpeed: 47.8, latency: 0.57, qualityIndex: null },
     { id: "193", creator: "Mistral AI", provider: "Mistral", model: "Mistral Medium", name: "Mistral Medium", contextWindow: 33000, pricePerMillionTokens: 4090, inputPrice: 2750, outputPrice: 8100, outputSpeed: 38.0, latency: 0.86, qualityIndex: 70 },
-]
+];
 
 const priceRatioOptions = [
-  { value: '3:1', label: '3:1 (Input:Output)' },
-  { value: '5:1', label: '5:1 (Input:Output)' },
-  { value: '10:1', label: '10:1 (Input:Output)' },
-]
+    { value: '3:1', label: '3:1 (Input:Output)' },
+    { value: '5:1', label: '5:1 (Input:Output)' },
+    { value: '10:1', label: '10:1 (Input:Output)' },
+];
 
 const speedCriteriaOptions = [
   { value: 'outputSpeed', label: 'Output Speed' },
   { value: 'latency', label: 'Latency' },
-]
+];
 
 const modelOptions = Array.from(new Set(data.map(item => item.model)))
 const criteriaOptions = [
@@ -219,27 +235,29 @@ const criteriaOptions = [
 ]
 
 export default function AIModelShowdown() {
-  const [selectedModel, setSelectedModel] = useState(modelOptions[0])
-  const [selectedCriteria, setSelectedCriteria] = useState(criteriaOptions[0].value)
-  const [winner, setWinner] = useState(null)
+    const [winner, setWinner] = useState<(DataItem & { adjustedPrice?: number }) | null>(null)
   const [isRevealing, setIsRevealing] = useState(false)
   const [selectedPriceRatio, setSelectedPriceRatio] = useState('3:1')
 const [selectedSpeedCriteria, setSelectedSpeedCriteria] = useState('outputSpeed')
+const [selectedCriteria, setSelectedCriteria] = useState(criteriaOptions[0].value) 
+const [selectedModel, setSelectedModel] = useState(modelOptions[0])
 
-  const findWinner = () => {
+const findWinner = () => {
     setIsRevealing(true)
-    let winnerItem
+    let winnerItem: DataItem & { adjustedPrice?: number } | null = null
   
     if (selectedCriteria === 'pricePerMillionTokens') {
       const [inputRatio, outputRatio] = selectedPriceRatio.split(':').map(Number)
       winnerItem = data.filter(item => item.model === selectedModel).reduce((min, item) => {
         const adjustedPrice = (item.inputPrice * inputRatio + item.outputPrice * outputRatio) / (inputRatio + outputRatio)
-        return adjustedPrice < (min.adjustedPrice || Infinity) ? { ...item, adjustedPrice } : min
-      }, {})
+        return !min || adjustedPrice < (min.adjustedPrice || Infinity) ? { ...item, adjustedPrice } : min
+      }, null as (DataItem & { adjustedPrice?: number }) | null)
     } else {
-      winnerItem = data.filter(item => item.model === selectedModel).reduce((max, item) => 
-        item[selectedSpeedCriteria] > (max[selectedSpeedCriteria] || -Infinity) ? item : max
-      , {})
+      winnerItem = data.filter(item => item.model === selectedModel).reduce((max, item) => {
+        const currentValue = item[selectedSpeedCriteria as keyof DataItem] as number
+        const maxValue = max ? max[selectedSpeedCriteria as keyof DataItem] as number : -Infinity
+        return !max || currentValue > maxValue ? item : max
+      }, null as DataItem | null)
     }
     
     setTimeout(() => {
@@ -255,7 +273,7 @@ const [selectedSpeedCriteria, setSelectedSpeedCriteria] = useState('outputSpeed'
   useEffect(() => {
     setWinner(null)
     setIsRevealing(false)
-  }, [selectedModel, selectedCriteria])
+  }, [])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
@@ -348,7 +366,7 @@ const [selectedSpeedCriteria, setSelectedSpeedCriteria] = useState('outputSpeed'
     <p className="text-xl mb-4 text-gray-600">{winner.model}</p>
     <p className="text-2xl font-bold text-pink-600">
       {selectedCriteria === 'pricePerMillionTokens' 
-        ? `$${(winner.adjustedPrice / 1000).toFixed(2)} per million tokens (${selectedPriceRatio} ratio)`
+        ? `$${((winner.adjustedPrice || winner.pricePerMillionTokens) / 1000).toFixed(2)} per million tokens (${selectedPriceRatio} ratio)`
         : selectedSpeedCriteria === 'outputSpeed'
           ? `${winner.outputSpeed.toFixed(1)} tokens/second`
           : `${winner.latency.toFixed(2)} seconds latency`}
