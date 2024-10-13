@@ -286,7 +286,7 @@ const findWinner = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
-          LLM API Showdown ! 🏆
+          LLM API Showdown! 🏆
         </motion.h1>
         <div className="space-y-6 mb-8">
           <Select value={selectedModel} onValueChange={setSelectedModel}>
