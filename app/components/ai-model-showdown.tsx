@@ -264,6 +264,7 @@ const findWinner = () => {
     
     setTimeout(() => {
       setWinner(winnerItem)
+      setIsRevealing(false)  // Reset isRevealing state
       confetti({
         particleCount: 100,
         spread: 70,
@@ -275,7 +276,7 @@ const findWinner = () => {
   useEffect(() => {
     setWinner(null)
     setIsRevealing(false)
-  }, [])
+  }, [selectedModel, selectedCriteria, selectedPriceRatio, selectedSpeedCriteria])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
