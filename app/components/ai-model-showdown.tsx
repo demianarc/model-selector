@@ -218,9 +218,11 @@ interface DataItem {
 ];
 
 const priceRatioOptions = [
-    { value: '3:1', label: '3:1 (Input:Output)' },
-    { value: '5:1', label: '5:1 (Input:Output)' },
-    { value: '10:1', label: '10:1 (Input:Output)' },
+  { value: '3:1', label: '3:1 (Input:Output)' },
+  { value: '5:1', label: '5:1 (Input:Output)' },
+  { value: '10:1', label: '10:1 (Input:Output)' },
+  { value: 'inputPrice', label: 'Input Price' },
+  { value: 'outputPrice', label: 'Output Price' },
 ];
 
 const speedCriteriaOptions = [
@@ -229,6 +231,7 @@ const speedCriteriaOptions = [
 ];
 
 const modelOptions = Array.from(new Set(data.map(item => item.model)))
+
 const criteriaOptions = [
   { value: 'pricePerMillionTokens', label: 'Cheapest' },
   { value: 'outputSpeed', label: 'Fastest' }
@@ -243,35 +246,51 @@ const [selectedCriteria, setSelectedCriteria] = useState(criteriaOptions[0].valu
 const [selectedModel, setSelectedModel] = useState(modelOptions[0])
 
 const findWinner = () => {
-    setIsRevealing(true)
-    let winnerItem: DataItem & { adjustedPrice?: number } | null = null
-  
-    if (selectedCriteria === 'pricePerMillionTokens') {
-      const [inputRatio, outputRatio] = selectedPriceRatio.split(':').map(Number)
-      winnerItem = data.filter(item => item.model === selectedModel).reduce((min, item) => {
+  setIsRevealing(true)
+  let winnerItem: DataItem & { adjustedPrice?: number } | null = null
+
+  if (selectedCriteria === 'pricePerMillionTokens') {
+    if (['inputPrice', 'outputPrice'].includes(selectedPriceRatio)) {
+      winnerItem = data
+        .filter(item => item.model === selectedModel)
+        .reduce((min, item) => {
+          const currentPrice = item[selectedPriceRatio as keyof DataItem] as number;
+          const minPrice = min ? min[selectedPriceRatio as keyof DataItem] as number : Infinity;
+          return !min || currentPrice < minPrice ? item : min;
+        }, null as DataItem | null);
+    } else {
+      const [inputRatio, outputRatio] = selectedPriceRatio.split(':').map(Number);
+      winnerItem = data
+        .filter(item => item.model === selectedModel)
+        .reduce((min, item) => {
         const adjustedPrice = (item.inputPrice * inputRatio + item.outputPrice * outputRatio) / (inputRatio + outputRatio)
         return !min || adjustedPrice < (min.adjustedPrice || Infinity) ? { ...item, adjustedPrice } : min
       }, null as (DataItem & { adjustedPrice?: number }) | null)
-    } else {
-      winnerItem = data.filter(item => item.model === selectedModel).reduce((max, item) => {
-        const currentValue = item[selectedSpeedCriteria as keyof DataItem] as number | null
-        const maxValue = max ? max[selectedSpeedCriteria as keyof DataItem] as number | null : null
-        if (currentValue === null) return max
-        if (maxValue === null) return item
-        return currentValue > maxValue ? item : max
-      }, null as DataItem | null)
     }
-    
-    setTimeout(() => {
-      setWinner(winnerItem)
-      setIsRevealing(false)  // Reset isRevealing state
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      })
-    }, 2000)
+  } else if (selectedCriteria === 'outputSpeed') {
+    winnerItem = data.filter(item => item.model === selectedModel).reduce((min, item) => {
+      return !min || (item[selectedCriteria] as number) < (min[selectedCriteria] as number) ? item : min
+    }, null as DataItem | null)
+  } else {
+    winnerItem = data.filter(item => item.model === selectedModel).reduce((max, item) => {
+      const currentValue = item[selectedSpeedCriteria as keyof DataItem] as number | null
+      const maxValue = max ? max[selectedSpeedCriteria as keyof DataItem] as number | null : null
+      if (currentValue === null) return max
+      if (maxValue === null) return item
+      return currentValue > maxValue ? item : max
+    }, null as DataItem | null)
   }
+  
+  setTimeout(() => {
+    setWinner(winnerItem)
+    setIsRevealing(false)  // Reset isRevealing state
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    })
+  }, 2000)
+}
 
   useEffect(() => {
     setWinner(null)
@@ -315,19 +334,19 @@ const findWinner = () => {
   </SelectContent>
 </Select>
 {selectedCriteria === 'pricePerMillionTokens' && (
-  <Select value={selectedPriceRatio} onValueChange={setSelectedPriceRatio}>
-    <SelectTrigger className="bg-white bg-opacity-50 backdrop-blur-sm">
-      <SelectValue placeholder="Select price ratio" />
-    </SelectTrigger>
-    <SelectContent>
-      {priceRatioOptions.map((option) => (
-        <SelectItem key={option.value} value={option.value}>
-          {option.label}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-)}
+          <Select value={selectedPriceRatio} onValueChange={setSelectedPriceRatio}>
+            <SelectTrigger className="bg-white bg-opacity-50 backdrop-blur-sm">
+              <SelectValue placeholder="Select price ratio or type" />
+            </SelectTrigger>
+            <SelectContent>
+              {priceRatioOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
 {selectedCriteria === 'outputSpeed' && (
   <Select value={selectedSpeedCriteria} onValueChange={setSelectedSpeedCriteria}>
     <SelectTrigger className="bg-white bg-opacity-50 backdrop-blur-sm">
@@ -358,28 +377,32 @@ const findWinner = () => {
             </motion.div>
           )}
           {winner && (
-  <motion.div
-    initial={{ opacity: 0, y: 50 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-    className="bg-white bg-opacity-80 backdrop-blur-lg p-6 rounded-lg shadow-xl"
-  >
-    <h2 className="text-3xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">👑 Winner 👑</h2>
-    <p className="text-4xl font-bold mb-2 text-purple-800">{winner.provider}</p>
-    <p className="text-xl mb-4 text-gray-600">{winner.model}</p>
-    <p className="text-2xl font-bold text-pink-600">
-  {selectedCriteria === 'pricePerMillionTokens' 
-    ? `$${((winner.adjustedPrice || winner.pricePerMillionTokens) / 1000).toFixed(2)} per million tokens (${selectedPriceRatio} ratio)`
-    : selectedSpeedCriteria === 'outputSpeed'
-      ? winner.outputSpeed !== null
-        ? `${winner.outputSpeed.toFixed(1)} tokens/second`
-        : 'N/A'
-      : winner.latency !== null
-        ? `${winner.latency.toFixed(2)} seconds latency`
-        : 'N/A'}
-</p>
-  </motion.div>
-)}
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="bg-white bg-opacity-80 backdrop-blur-lg p-6 rounded-lg shadow-xl"
+    >
+      <h2 className="text-3xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">👑 Winner 👑</h2>
+      <p className="text-4xl font-bold mb-2 text-purple-800">{winner.provider}</p>
+      <p className="text-xl mb-4 text-gray-600">{winner.model}</p>
+      <p className="text-2xl font-bold text-pink-600">
+        {selectedCriteria === 'pricePerMillionTokens' 
+          ? `$${((winner.adjustedPrice || winner.pricePerMillionTokens) / 1000).toFixed(2)} per million tokens (${selectedPriceRatio} ratio)`
+          : selectedCriteria === 'inputPrice'
+          ? `$${(winner.inputPrice / 1000).toFixed(2)} per million tokens (Input)`
+          : selectedCriteria === 'outputPrice'
+              ? `$${(winner.outputPrice / 1000).toFixed(2)} per million tokens (Output)`
+              : selectedSpeedCriteria === 'outputSpeed'
+                ? winner.outputSpeed !== null
+                  ? `${winner.outputSpeed.toFixed(1)} tokens/second`
+              : 'N/A'
+            : winner.latency !== null
+              ? `${winner.latency.toFixed(2)} seconds latency`
+              : 'N/A'}
+      </p>
+    </motion.div>
+  )}
         </AnimatePresence>
       </div>
     </div>
