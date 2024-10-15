@@ -38,6 +38,9 @@ export default function RootLayout({
               Data mainly from <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">artificialanalysis.ai</a>
             </div>
             <div>
+              Also try: <a href="https://whatllm.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">What LLM?</a>
+            </div>
+            <div>
               Updated on October 13th 2024
             </div>
             <div>
