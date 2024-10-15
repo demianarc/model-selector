@@ -21,6 +21,25 @@ interface DataItem {
     qualityIndex: number | null;
 }
 
+const providerLinks: { [key: string]: string } = {
+  "Hyperbolic": "https://www.hyperbolic.xyz",
+  "Amazon Bedrock": "https://aws.amazon.com",
+  "OctoAI": "https://octo.ai",
+  "Lepton AI": "https://www.lepton.ai",
+  "Microsoft Azure": "https://azure.microsoft.com",
+  "Fireworks": "https://fireworks.ai",
+  "Deepinfra": "https://www.deepinfra.com",
+  "Groq": "https://groq.com",
+  "SambaNova": "https://sambanova.ai",
+  "Databricks": "https://www.databricks.com",
+  "Perplexity": "https://www.perplexity.ai",
+  "Together.ai": "https://www.together.ai",
+  "Cerebras": "https://www.cerebras.ai",
+  "Nebius AI": "https://studio.nebius.ai/",
+  "Nebius AI Fast": "https://studio.nebius.ai/",
+  // Add other providers as needed
+};
+
   const data: DataItem[] = [
     { id: "1", creator: "OpenAI", provider: "OpenAI", model: "GPT-4", name: "o1-preview", contextWindow: 128000, pricePerMillionTokens: 26250, inputPrice: 15000, outputPrice: 60000, outputSpeed: 30.9, latency: 32.62, qualityIndex: null },
     { id: "2", creator: "OpenAI", provider: "OpenAI", model: "GPT-4", name: "o1-mini", contextWindow: 128000, pricePerMillionTokens: 5250, inputPrice: 3000, outputPrice: 12000, outputSpeed: 70.2, latency: 14.58, qualityIndex: null },
@@ -234,7 +253,7 @@ interface DataItem {
     { id: "210", creator: "DeepSeek", provider: "Nebius AI Fast", model: "DeepSeek-Coder-V2-Lite", name: "DeepSeek-Coder-V2-Lite-Instruct", contextWindow: 128000, pricePerMillionTokens: 360, inputPrice: 80, outputPrice: 240, outputSpeed: 50, latency: null, qualityIndex: 80 },
     { id: "211", creator: "Microsoft", provider: "Nebius AI", model: "Phi-3-mini-4k", name: "Phi-3-mini-4k-instruct", contextWindow: 4000, pricePerMillionTokens: 170, inputPrice: 40, outputPrice: 130, outputSpeed: 13, latency: null, qualityIndex: 70 },
     { id: "212", creator: "Microsoft", provider: "Nebius AI Fast", model: "Phi-3-mini-4k", name: "Phi-3-mini-4k-instruct", contextWindow: 4000, pricePerMillionTokens: 530, inputPrice: 130, outputPrice: 400, outputSpeed: 40, latency: null, qualityIndex: 70 },
-    { id: "213", creator: "Aleph", provider: "Nebius AI", model: "OLMo-7B", name: "OLMo-7B-Instruct", contextWindow: 2000, pricePerMillionTokens: 320, inputPrice: 80, outputPrice: 240, outputSpeed: 25, latency: null, qualityIndex: 46 }
+    { id: "213", creator: "Allenai", provider: "Nebius AI", model: "OLMo-7B", name: "OLMo-7B-Instruct", contextWindow: 2000, pricePerMillionTokens: 320, inputPrice: 80, outputPrice: 240, outputSpeed: 25, latency: null, qualityIndex: 46 }
 ];
 
 const priceRatioOptions = [
@@ -397,32 +416,39 @@ const findWinner = () => {
             </motion.div>
           )}
           {winner && (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="bg-white bg-opacity-80 backdrop-blur-lg p-6 rounded-lg shadow-xl"
+  <motion.div
+    initial={{ opacity: 0, y: 50 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+    className="bg-white bg-opacity-80 backdrop-blur-lg p-6 rounded-lg shadow-xl"
+  >
+    <h2 className="text-3xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">👑 Winner 👑</h2>
+    <a
+      href={providerLinks[winner.provider] || '#'}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-4xl font-bold mb-2 text-purple-800 hover:text-purple-600 transition-colors duration-200"
     >
-      <h2 className="text-3xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">👑 Winner 👑</h2>
-      <p className="text-4xl font-bold mb-2 text-purple-800">{winner.provider}</p>
-      <p className="text-xl mb-4 text-gray-600">{winner.model}</p>
-      <p className="text-2xl font-bold text-pink-600">
-        {selectedCriteria === 'pricePerMillionTokens' 
-          ? `$${((winner.adjustedPrice || winner.pricePerMillionTokens) / 1000).toFixed(2)} per million tokens (${selectedPriceRatio} ratio)`
-          : selectedCriteria === 'inputPrice'
-          ? `$${(winner.inputPrice / 1000).toFixed(2)} per million tokens (Input)`
-          : selectedCriteria === 'outputPrice'
-              ? `$${(winner.outputPrice / 1000).toFixed(2)} per million tokens (Output)`
-              : selectedSpeedCriteria === 'outputSpeed'
-                ? winner.outputSpeed !== null
-                  ? `${winner.outputSpeed.toFixed(1)} tokens/second`
-              : 'N/A'
-            : winner.latency !== null
-              ? `${winner.latency.toFixed(2)} seconds latency`
-              : 'N/A'}
-      </p>
-    </motion.div>
-  )}
+      {winner.provider}
+    </a>
+    <p className="text-xl mb-4 text-gray-600">{winner.model}</p>
+    <p className="text-2xl font-bold text-pink-600">
+      {selectedCriteria === 'pricePerMillionTokens' 
+        ? `$${((winner.adjustedPrice || winner.pricePerMillionTokens) / 1000).toFixed(2)} per million tokens (${selectedPriceRatio} ratio)`
+        : selectedCriteria === 'inputPrice'
+        ? `$${(winner.inputPrice / 1000).toFixed(2)} per million tokens (Input)`
+        : selectedCriteria === 'outputPrice'
+            ? `$${(winner.outputPrice / 1000).toFixed(2)} per million tokens (Output)`
+            : selectedSpeedCriteria === 'outputSpeed'
+              ? winner.outputSpeed !== null
+                ? `${winner.outputSpeed.toFixed(1)} tokens/second`
+            : 'N/A'
+          : winner.latency !== null
+            ? `${winner.latency.toFixed(2)} seconds latency`
+            : 'N/A'}
+    </p>
+  </motion.div>
+)}
         </AnimatePresence>
       </div>
     </div>
