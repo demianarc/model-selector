@@ -35,7 +35,7 @@ export default function RootLayout({
         <footer className="text-xs text-gray-500 py-4 px-6 bg-gray-100">
           <div className="container mx-auto flex justify-between items-center">
             <div>
-              Data from <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">artificialanalysis.ai</a>
+              Data mainly from <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">artificialanalysis.ai</a>
             </div>
             <div>
               Updated on October 13th 2024
