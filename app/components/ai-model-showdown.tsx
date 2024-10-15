@@ -234,27 +234,28 @@ const providerLinks: { [key: string]: string } = {
     { id: "191", creator: "Mistral AI", provider: "Together.ai", model: "Mistral 7B", name: "Mistral 7B", contextWindow: 8000, pricePerMillionTokens: 200, inputPrice: 200, outputPrice: 200, outputSpeed: 126.2, latency: 0.32, qualityIndex: 40 },
     { id: "192", creator: "Mistral AI", provider: "Mistral", model: "Codestral", name: "Codestral", contextWindow: 33000, pricePerMillionTokens: 300, inputPrice: 200, outputPrice: 600, outputSpeed: 47.8, latency: 0.57, qualityIndex: null },
     { id: "193", creator: "Mistral AI", provider: "Mistral", model: "Mistral Medium", name: "Mistral Medium", contextWindow: 33000, pricePerMillionTokens: 4090, inputPrice: 2750, outputPrice: 8100, outputSpeed: 38.0, latency: 0.86, qualityIndex: 70 },
-    { id: "194", creator: "Meta", provider: "Nebius AI", model: "Llama 3.1 8B", name: "Meta-Llama-3.1-8B-Instruct", contextWindow: 128000, pricePerMillionTokens: 80, inputPrice: 20, outputPrice: 60, outputSpeed: 30, latency: null, qualityIndex: 73 },
-    { id: "195", creator: "Meta", provider: "Nebius AI Fast", model: "Llama 3.1 8B", name: "Meta-Llama-3.1-8B-Instruct", contextWindow: 128000, pricePerMillionTokens: 120, inputPrice: 30, outputPrice: 90, outputSpeed: 155, latency: null, qualityIndex: 73 },
-    { id: "196", creator: "Meta", provider: "Nebius AI", model: "Llama 3.1 70B", name: "Meta-Llama-3.1-70B-Instruct", contextWindow: 128000, pricePerMillionTokens: 530, inputPrice: 130, outputPrice: 400, outputSpeed: 25, latency: null, qualityIndex: 86 },
-    { id: "197", creator: "Meta", provider: "Nebius AI Fast", model: "Llama 3.1 70B", name: "Meta-Llama-3.1-70B-Instruct", contextWindow: 128000, pricePerMillionTokens: 950, inputPrice: 250, outputPrice: 700, outputSpeed: 140, latency: null, qualityIndex: 86 },
-    { id: "198", creator: "Meta", provider: "Nebius AI", model: "Llama 3.1 405B", name: "Meta-Llama-3.1-405B-Instruct", contextWindow: 128000, pricePerMillionTokens: 4000, inputPrice: 1000, outputPrice: 3000, outputSpeed: 20, latency: null, qualityIndex: 89 },
-    { id: "199", creator: "Mistral", provider: "Nebius AI", model: "Mistral Nemo", name: "Mistral-Nemo-Instruct-2407", contextWindow: 128000, pricePerMillionTokens: 160, inputPrice: 40, outputPrice: 120, outputSpeed: 30, latency: null, qualityIndex: 68 },
-    { id: "200", creator: "Mistral", provider: "Nebius AI Fast", model: "Mistral Nemo", name: "Mistral-Nemo-Instruct-2407", contextWindow: 128000, pricePerMillionTokens: 320, inputPrice: 80, outputPrice: 240, outputSpeed: 100, latency: null, qualityIndex: 68 },
-    { id: "201", creator: "Mistral", provider: "Nebius AI", model: "Mixtral 8x7B", name: "Mixtral-8x7B-Instruct-v0.1", contextWindow: 33000, pricePerMillionTokens: 320, inputPrice: 80, outputPrice: 240, outputSpeed: 23, latency: null, qualityIndex: 71 },
-    { id: "202", creator: "Mistral", provider: "Nebius AI Fast", model: "Mixtral 8x7B", name: "Mixtral-8x7B-Instruct-v0.1", contextWindow: 33000, pricePerMillionTokens: 450, inputPrice: 150, outputPrice: 450, outputSpeed: 143, latency: null, qualityIndex: 71 },
-    { id: "203", creator: "Mistral", provider: "Nebius AI", model: "Mixtral 8x22B", name: "Mixtral-8x22B-Instruct-v0.1", contextWindow: 65000, pricePerMillionTokens: 1600, inputPrice: 400, outputPrice: 1200, outputSpeed: 23, latency: null, qualityIndex: 78 },
-    { id: "204", creator: "Mistral", provider: "Nebius AI Fast", model: "Mixtral 8x22B", name: "Mixtral-8x22B-Instruct-v0.1", contextWindow: 65000, pricePerMillionTokens: 2700, inputPrice: 700, outputPrice: 2100, outputSpeed: 135, latency: null, qualityIndex: 78 },
-    { id: "205", creator: "Qwen", provider: "Nebius AI", model: "Qwen2.5-Coder-7B", name: "Qwen2.5-Coder-7B", contextWindow: 32000, pricePerMillionTokens: 120, inputPrice: 30, outputPrice: 90, outputSpeed: 70, latency: null, qualityIndex: 74 },
-    { id: "206", creator: "Qwen", provider: "Nebius AI Fast", model: "Qwen2.5-Coder-7B", name: "Qwen2.5-Coder-7B", contextWindow: 32000, pricePerMillionTokens: 420, inputPrice: 310, outputPrice: 300, outputSpeed: 132, latency: null, qualityIndex: 74 },
-    { id: "207", creator: "Qwen", provider: "Nebius AI", model: "Qwen2.5-Coder-7B-Instruct", name: "Qwen2.5-Coder-7B-Instruct", contextWindow: 32000, pricePerMillionTokens: 120, inputPrice: 30, outputPrice: 90, outputSpeed: 70, latency: null, qualityIndex: 74 },
-    { id: "208", creator: "Qwen", provider: "Nebius AI Fast", model: "Qwen2.5-Coder-7B-Instruct", name: "Qwen2.5-Coder-7B-Instruct", contextWindow: 32000, pricePerMillionTokens: 420, inputPrice: 310, outputPrice: 300, outputSpeed: 132, latency: null, qualityIndex: 74 },
-    { id: "209", creator: "DeepSeek", provider: "Nebius AI", model: "DeepSeek-Coder-V2-Lite", name: "DeepSeek-Coder-V2-Lite-Instruct", contextWindow: 128000, pricePerMillionTokens: 160, inputPrice: 40, outputPrice: 120, outputSpeed: 30, latency: null, qualityIndex: 80 },
-    { id: "210", creator: "DeepSeek", provider: "Nebius AI Fast", model: "DeepSeek-Coder-V2-Lite", name: "DeepSeek-Coder-V2-Lite-Instruct", contextWindow: 128000, pricePerMillionTokens: 360, inputPrice: 80, outputPrice: 240, outputSpeed: 50, latency: null, qualityIndex: 80 },
-    { id: "211", creator: "Microsoft", provider: "Nebius AI", model: "Phi-3-mini-4k", name: "Phi-3-mini-4k-instruct", contextWindow: 4000, pricePerMillionTokens: 170, inputPrice: 40, outputPrice: 130, outputSpeed: 13, latency: null, qualityIndex: 70 },
-    { id: "212", creator: "Microsoft", provider: "Nebius AI Fast", model: "Phi-3-mini-4k", name: "Phi-3-mini-4k-instruct", contextWindow: 4000, pricePerMillionTokens: 530, inputPrice: 130, outputPrice: 400, outputSpeed: 40, latency: null, qualityIndex: 70 },
-    { id: "213", creator: "Allenai", provider: "Nebius AI", model: "OLMo-7B", name: "OLMo-7B-Instruct", contextWindow: 2000, pricePerMillionTokens: 320, inputPrice: 80, outputPrice: 240, outputSpeed: 25, latency: null, qualityIndex: 46 }
+    { id: "194", creator: "Meta", provider: "Nebius AI", model: "Llama 3.1 8B", name: "Meta-Llama-3.1-8B-Instruct", contextWindow: 128000, pricePerMillionTokens: 30, inputPrice: 20, outputPrice: 60, outputSpeed: 30, latency: null, qualityIndex: 73 },
+{ id: "195", creator: "Meta", provider: "Nebius AI Fast", model: "Llama 3.1 8B", name: "Meta-Llama-3.1-8B-Instruct", contextWindow: 128000, pricePerMillionTokens: 45, inputPrice: 30, outputPrice: 90, outputSpeed: 155, latency: null, qualityIndex: 73 },
+{ id: "196", creator: "Meta", provider: "Nebius AI", model: "Llama 3.1 70B", name: "Meta-Llama-3.1-70B-Instruct", contextWindow: 128000, pricePerMillionTokens: 197.5, inputPrice: 130, outputPrice: 400, outputSpeed: 25, latency: null, qualityIndex: 86 },
+{ id: "197", creator: "Meta", provider: "Nebius AI Fast", model: "Llama 3.1 70B", name: "Meta-Llama-3.1-70B-Instruct", contextWindow: 128000, pricePerMillionTokens: 362.5, inputPrice: 250, outputPrice: 700, outputSpeed: 140, latency: null, qualityIndex: 86 },
+{ id: "198", creator: "Meta", provider: "Nebius AI", model: "Llama 3.1 405B", name: "Meta-Llama-3.1-405B-Instruct", contextWindow: 128000, pricePerMillionTokens: 1500, inputPrice: 1000, outputPrice: 3000, outputSpeed: 20, latency: null, qualityIndex: 89 },
+{ id: "199", creator: "Mistral", provider: "Nebius AI", model: "Mistral Nemo", name: "Mistral-Nemo-Instruct-2407", contextWindow: 128000, pricePerMillionTokens: 60, inputPrice: 40, outputPrice: 120, outputSpeed: 30, latency: null, qualityIndex: 68 },
+{ id: "200", creator: "Mistral", provider: "Nebius AI Fast", model: "Mistral Nemo", name: "Mistral-Nemo-Instruct-2407", contextWindow: 128000, pricePerMillionTokens: 120, inputPrice: 80, outputPrice: 240, outputSpeed: 100, latency: null, qualityIndex: 68 },
+{ id: "201", creator: "Mistral", provider: "Nebius AI", model: "Mixtral 8x7B", name: "Mixtral-8x7B-Instruct-v0.1", contextWindow: 33000, pricePerMillionTokens: 120, inputPrice: 80, outputPrice: 240, outputSpeed: 23, latency: null, qualityIndex: 71 },
+{ id: "202", creator: "Mistral", provider: "Nebius AI Fast", model: "Mixtral 8x7B", name: "Mixtral-8x7B-Instruct-v0.1", contextWindow: 33000, pricePerMillionTokens: 225, inputPrice: 150, outputPrice: 450, outputSpeed: 143, latency: null, qualityIndex: 71 },
+{ id: "203", creator: "Mistral", provider: "Nebius AI", model: "Mixtral 8x22B", name: "Mixtral-8x22B-Instruct-v0.1", contextWindow: 65000, pricePerMillionTokens: 600, inputPrice: 400, outputPrice: 1200, outputSpeed: 23, latency: null, qualityIndex: 78 },
+{ id: "204", creator: "Mistral", provider: "Nebius AI Fast", model: "Mixtral 8x22B", name: "Mixtral-8x22B-Instruct-v0.1", contextWindow: 65000, pricePerMillionTokens: 1050, inputPrice: 700, outputPrice: 2100, outputSpeed: 135, latency: null, qualityIndex: 78 },
+{ id: "205", creator: "Qwen", provider: "Nebius AI", model: "Qwen2.5-Coder-7B", name: "Qwen2.5-Coder-7B", contextWindow: 32000, pricePerMillionTokens: 45, inputPrice: 30, outputPrice: 90, outputSpeed: 70, latency: null, qualityIndex: 74 },
+{ id: "206", creator: "Qwen", provider: "Nebius AI Fast", model: "Qwen2.5-Coder-7B", name: "Qwen2.5-Coder-7B", contextWindow: 32000, pricePerMillionTokens: 307.5, inputPrice: 310, outputPrice: 300, outputSpeed: 132, latency: null, qualityIndex: 74 },
+{ id: "207", creator: "Qwen", provider: "Nebius AI", model: "Qwen2.5-Coder-7B", name: "Qwen2.5-Coder-7B-Instruct", contextWindow: 32000, pricePerMillionTokens: 45, inputPrice: 30, outputPrice: 90, outputSpeed: 70, latency: null, qualityIndex: 74 },
+{ id: "208", creator: "Qwen", provider: "Nebius AI Fast", model: "Qwen2.5-Coder-7B", name: "Qwen2.5-Coder-7B-Instruct", contextWindow: 32000, pricePerMillionTokens: 307.5, inputPrice: 310, outputPrice: 300, outputSpeed: 132, latency: null, qualityIndex: 74 },
+{ id: "209", creator: "DeepSeek", provider: "Nebius AI", model: "DeepSeek-Coder-V2-Lite", name: "DeepSeek-Coder-V2-Lite-Instruct", contextWindow: 128000, pricePerMillionTokens: 60, inputPrice: 40, outputPrice: 120, outputSpeed: 30, latency: null, qualityIndex: 80 },
+{ id: "210", creator: "DeepSeek", provider: "Nebius AI Fast", model: "DeepSeek-Coder-V2-Lite", name: "DeepSeek-Coder-V2-Lite-Instruct", contextWindow: 128000, pricePerMillionTokens: 120, inputPrice: 80, outputPrice: 240, outputSpeed: 50, latency: null, qualityIndex: 80 },
+{ id: "211", creator: "Microsoft", provider: "Nebius AI", model: "Phi-3-mini-4k", name: "Phi-3-mini-4k-instruct", contextWindow: 4000, pricePerMillionTokens: 62.5, inputPrice: 40, outputPrice: 130, outputSpeed: 13, latency: null, qualityIndex: 70 },
+{ id: "212", creator: "Microsoft", provider: "Nebius AI Fast", model: "Phi-3-mini-4k", name: "Phi-3-mini-4k-instruct", contextWindow: 4000, pricePerMillionTokens: 197.5, inputPrice: 130, outputPrice: 400, outputSpeed: 40, latency: null, qualityIndex: 70 },
+{ id: "213", creator: "Aleph", provider: "Nebius AI", model: "OLMo-7B", name: "OLMo-7B-Instruct", contextWindow: 2000, pricePerMillionTokens: 120, inputPrice: 80, outputPrice: 240, outputSpeed: 25, latency: null, qualityIndex: 46 },
 ];
+
 
 const priceRatioOptions = [
   { value: '3:1', label: '3:1 (Input:Output)' },
@@ -288,41 +289,38 @@ const findWinner = () => {
   setIsRevealing(true)
   let winnerItem: DataItem & { adjustedPrice?: number } | null = null
 
+  const filteredData = data.filter(item => item.model === selectedModel)
+
   if (selectedCriteria === 'pricePerMillionTokens') {
     if (['inputPrice', 'outputPrice'].includes(selectedPriceRatio)) {
-      winnerItem = data
-        .filter(item => item.model === selectedModel)
-        .reduce((min, item) => {
-          const currentPrice = item[selectedPriceRatio as keyof DataItem] as number;
-          const minPrice = min ? min[selectedPriceRatio as keyof DataItem] as number : Infinity;
-          return !min || currentPrice < minPrice ? item : min;
-        }, null as DataItem | null);
+      winnerItem = filteredData.reduce((min, item) => {
+        const currentPrice = item[selectedPriceRatio as keyof DataItem] as number;
+        const minPrice = min ? min[selectedPriceRatio as keyof DataItem] as number : Infinity;
+        return !min || currentPrice < minPrice ? item : min;
+      }, null as DataItem | null);
     } else {
-      const [inputRatio, outputRatio] = selectedPriceRatio.split(':').map(Number);
-      winnerItem = data
-        .filter(item => item.model === selectedModel)
-        .reduce((min, item) => {
+      // Calculate price based on the selected ratio
+      const [inputRatio, outputRatio] = selectedPriceRatio.split(':').map(Number)
+      winnerItem = filteredData.reduce((min, item) => {
         const adjustedPrice = (item.inputPrice * inputRatio + item.outputPrice * outputRatio) / (inputRatio + outputRatio)
         return !min || adjustedPrice < (min.adjustedPrice || Infinity) ? { ...item, adjustedPrice } : min
       }, null as (DataItem & { adjustedPrice?: number }) | null)
     }
   } else if (selectedCriteria === 'outputSpeed') {
-    winnerItem = data.filter(item => item.model === selectedModel).reduce((min, item) => {
-      return !min || (item[selectedCriteria] as number) < (min[selectedCriteria] as number) ? item : min
-    }, null as DataItem | null)
+    winnerItem = filteredData.reduce((max, item) => 
+      !max || (item.outputSpeed ?? 0) > (max.outputSpeed ?? 0) ? item : max
+    , null as DataItem | null)
   } else {
-    winnerItem = data.filter(item => item.model === selectedModel).reduce((max, item) => {
-      const currentValue = item[selectedSpeedCriteria as keyof DataItem] as number | null
-      const maxValue = max ? max[selectedSpeedCriteria as keyof DataItem] as number | null : null
-      if (currentValue === null) return max
-      if (maxValue === null) return item
-      return currentValue > maxValue ? item : max
+    // For latency
+    winnerItem = filteredData.reduce((min, item) => {
+      if (item.latency === null) return min
+      return !min || (min.latency === null) || item.latency < min.latency ? item : min
     }, null as DataItem | null)
   }
   
   setTimeout(() => {
     setWinner(winnerItem)
-    setIsRevealing(false)  // Reset isRevealing state
+    setIsRevealing(false)
     confetti({
       particleCount: 100,
       spread: 70,
@@ -434,14 +432,14 @@ const findWinner = () => {
     <p className="text-xl mb-4 text-gray-600">{winner.model}</p>
     <p className="text-2xl font-bold text-pink-600">
       {selectedCriteria === 'pricePerMillionTokens' 
-        ? `$${((winner.adjustedPrice || winner.pricePerMillionTokens) / 1000).toFixed(2)} per million tokens (${selectedPriceRatio} ratio)`
-        : selectedCriteria === 'inputPrice'
-        ? `$${(winner.inputPrice / 1000).toFixed(2)} per million tokens (Input)`
-        : selectedCriteria === 'outputPrice'
-            ? `$${(winner.outputPrice / 1000).toFixed(2)} per million tokens (Output)`
-            : selectedSpeedCriteria === 'outputSpeed'
-              ? winner.outputSpeed !== null
-                ? `${winner.outputSpeed.toFixed(1)} tokens/second`
+        ? selectedPriceRatio === 'inputPrice'
+          ? `$${(winner.inputPrice / 1000).toFixed(3)} per million tokens (Input Price)`
+          : selectedPriceRatio === 'outputPrice'
+            ? `$${(winner.outputPrice / 1000).toFixed(3)} per million tokens (Output Price)`
+            : `$${((winner.adjustedPrice || winner.pricePerMillionTokens) / 1000).toFixed(3)} per million tokens (${selectedPriceRatio} ratio)`
+        : selectedCriteria === 'outputSpeed'
+          ? winner.outputSpeed !== null
+            ? `${winner.outputSpeed.toFixed(1)} tokens/second`
             : 'N/A'
           : winner.latency !== null
             ? `${winner.latency.toFixed(2)} seconds latency`
