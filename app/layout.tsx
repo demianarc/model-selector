@@ -27,9 +27,24 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        {children}
+        <main className="flex-grow">
+          {children}
+        </main>
+        <footer className="text-xs text-gray-500 py-4 px-6 bg-gray-100">
+          <div className="container mx-auto flex justify-between items-center">
+            <div>
+              Data from <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">artificialanalysis.ai</a>
+            </div>
+            <div>
+              Updated on October 13th 2024
+            </div>
+            <div>
+              Dev by <a href="https://x.com/demian_ai" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">dylan</a>
+            </div>
+          </div>
+        </footer>
         <Analytics />
       </body>
     </html>
