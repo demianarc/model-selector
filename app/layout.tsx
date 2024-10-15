@@ -32,8 +32,8 @@ export default function RootLayout({
         <main className="flex-grow">
           {children}
         </main>
-        <footer className="text-xs text-gray-500 py-4 px-6 bg-gray-100">
-          <div className="container mx-auto flex justify-between items-center">
+        <footer className="w-full py-4 px-6 bg-gray-100">
+          <div className="container mx-auto max-w-4xl text-center text-xs text-gray-500 space-y-2">
             <div>
               Data mainly from <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">artificialanalysis.ai</a>
             </div>

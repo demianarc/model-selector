@@ -41,12 +41,12 @@ const providerLinks: { [key: string]: string } = {
 };
 
   const data: DataItem[] = [
-    { id: "1", creator: "OpenAI", provider: "OpenAI", model: "GPT-4", name: "o1-preview", contextWindow: 128000, pricePerMillionTokens: 26250, inputPrice: 15000, outputPrice: 60000, outputSpeed: 30.9, latency: 32.62, qualityIndex: null },
-    { id: "2", creator: "OpenAI", provider: "OpenAI", model: "GPT-4", name: "o1-mini", contextWindow: 128000, pricePerMillionTokens: 5250, inputPrice: 3000, outputPrice: 12000, outputSpeed: 70.2, latency: 14.58, qualityIndex: null },
-    { id: "3", creator: "OpenAI", provider: "OpenAI", model: "GPT-4", name: "GPT-4o", contextWindow: 128000, pricePerMillionTokens: 4380, inputPrice: 2500, outputPrice: 10000, outputSpeed: 124.2, latency: 0.42, qualityIndex: 100 },
-    { id: "4", creator: "OpenAI", provider: "OpenAI", model: "GPT-4", name: "GPT-4o (May '24)", contextWindow: 128000, pricePerMillionTokens: 7500, inputPrice: 5000, outputPrice: 15000, outputSpeed: 112.6, latency: 0.42, qualityIndex: 100 },
-    { id: "5", creator: "OpenAI", provider: "Microsoft Azure", model: "GPT-4", name: "GPT-4o (May '24)", contextWindow: 128000, pricePerMillionTokens: 7500, inputPrice: 5000, outputPrice: 15000, outputSpeed: 107.2, latency: 0.37, qualityIndex: 100 },
-    { id: "6", creator: "OpenAI", provider: "OpenAI", model: "GPT-4", name: "GPT-4o mini", contextWindow: 128000, pricePerMillionTokens: 260, inputPrice: 150, outputPrice: 600, outputSpeed: 98.8, latency: 0.45, qualityIndex: 88 },
+    { id: "1", creator: "OpenAI", provider: "OpenAI", model: "GPT-4o1-preview", name: "o1-preview", contextWindow: 128000, pricePerMillionTokens: 26250, inputPrice: 15000, outputPrice: 60000, outputSpeed: 30.9, latency: 32.62, qualityIndex: null },
+    { id: "2", creator: "OpenAI", provider: "OpenAI", model: "GPT-4o1-mini", name: "o1-mini", contextWindow: 128000, pricePerMillionTokens: 5250, inputPrice: 3000, outputPrice: 12000, outputSpeed: 70.2, latency: 14.58, qualityIndex: null },
+    { id: "3", creator: "OpenAI", provider: "OpenAI", model: "GPT-4o", name: "GPT-4o", contextWindow: 128000, pricePerMillionTokens: 4380, inputPrice: 2500, outputPrice: 10000, outputSpeed: 124.2, latency: 0.42, qualityIndex: 100 },
+    { id: "4", creator: "OpenAI", provider: "OpenAI", model: "GPT-4o (May 24)", name: "GPT-4o (May '24)", contextWindow: 128000, pricePerMillionTokens: 7500, inputPrice: 5000, outputPrice: 15000, outputSpeed: 112.6, latency: 0.42, qualityIndex: 100 },
+    { id: "5", creator: "OpenAI", provider: "Microsoft Azure", model: "GPT-4o", name: "GPT-4o (May '24)", contextWindow: 128000, pricePerMillionTokens: 7500, inputPrice: 5000, outputPrice: 15000, outputSpeed: 107.2, latency: 0.37, qualityIndex: 100 },
+    { id: "6", creator: "OpenAI", provider: "OpenAI", model: "GPT-4o mini", name: "GPT-4o mini", contextWindow: 128000, pricePerMillionTokens: 260, inputPrice: 150, outputPrice: 600, outputSpeed: 98.8, latency: 0.45, qualityIndex: 88 },
     { id: "7", creator: "Meta", provider: "Replicate", model: "Llama 3.1 405B", name: "Llama 3.1 405B", contextWindow: 128000, pricePerMillionTokens: 9500, inputPrice: 9500, outputPrice: 9500, outputSpeed: 18.7, latency: 1.13, qualityIndex: 100 },
     { id: "8", creator: "Meta", provider: "Hyperbolic", model: "Llama 3.1 405B", name: "Llama 3.1 405B", contextWindow: 128000, pricePerMillionTokens: 4000, inputPrice: 4000, outputPrice: 4000, outputSpeed: 16.1, latency: 0.91, qualityIndex: 100 },
     { id: "9", creator: "Meta", provider: "Amazon Bedrock", model: "Llama 3.1 405B", name: "Llama 3.1 405B", contextWindow: 128000, pricePerMillionTokens: 7990, inputPrice: 5320, outputPrice: 16000, outputSpeed: 13.1, latency: 1.78, qualityIndex: 100 },
