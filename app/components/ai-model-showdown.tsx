@@ -344,8 +344,9 @@ const findWinner = () => {
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
           LLM API Showdown ! 🏆
-        </motion.h1>
-        <div className="space-y-6 mb-8">
+         </motion.h1>
+         <p className="text-white text-sm mb-8">Compare LLM API providers on price and speed ⚡️</p>
+         <div className="space-y-6 mb-8">
           <Select value={selectedModel} onValueChange={setSelectedModel}>
             <SelectTrigger className="bg-white bg-opacity-50 backdrop-blur-sm">
               <SelectValue placeholder="Select a model" />

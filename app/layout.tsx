@@ -16,7 +16,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: 'LLM Showdown 🏆',
-  description: 'Compare different AI language models',
+  description: 'Compare different AI language models - LLM API provider comparison app',
 }
 
 export default function RootLayout({
