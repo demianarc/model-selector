@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import confetti from 'canvas-confetti'
+import { NeonGradientCard } from './NeonGradientCard';
 
 interface DataItem {
     id: string;
@@ -336,9 +337,9 @@ const findWinner = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
-      <div className="container mx-auto p-8 max-w-md bg-white bg-opacity-20 backdrop-blur-lg rounded-xl shadow-lg text-center">
+      <NeonGradientCard className="container mx-auto p-8 max-w-md bg-white bg-opacity-20 backdrop-blur-lg rounded-xl shadow-lg text-center">
         <motion.h1 
-          className="text-5xl font-extrabold mb-8 text-white"
+          className="text-5xl font-extrabold mb-2 text-white"
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -449,7 +450,7 @@ const findWinner = () => {
   </motion.div>
 )}
         </AnimatePresence>
+        </NeonGradientCard> 
       </div>
-    </div>
   )
 }
