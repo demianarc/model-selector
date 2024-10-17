@@ -35,8 +35,8 @@ const providerLinks: { [key: string]: string } = {
   "Perplexity": "https://www.perplexity.ai",
   "Together.ai": "https://www.together.ai",
   "Cerebras": "https://www.cerebras.ai",
-  "Nebius AI": "https://studio.nebius.ai/",
-  "Nebius AI Fast": "https://studio.nebius.ai/",
+  "Nebius AI": "https://nebius.com/studio/inference",
+  "Nebius AI Fast": "https://nebius.com/studio/inference",
   // Add other providers as needed
 };
 
