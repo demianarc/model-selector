@@ -23,21 +23,21 @@ interface DataItem {
 }
 
 const providerLinks: { [key: string]: string } = {
-  "Hyperbolic": "https://www.hyperbolic.xyz",
-  "Amazon Bedrock": "https://aws.amazon.com",
-  "OctoAI": "https://octo.ai",
-  "Lepton AI": "https://www.lepton.ai",
-  "Microsoft Azure": "https://azure.microsoft.com",
-  "Fireworks": "https://fireworks.ai",
-  "Deepinfra": "https://www.deepinfra.com",
-  "Groq": "https://groq.com",
-  "SambaNova": "https://sambanova.ai",
-  "Databricks": "https://www.databricks.com",
-  "Perplexity": "https://www.perplexity.ai",
-  "Together.ai": "https://www.together.ai",
-  "Cerebras": "https://www.cerebras.ai",
-  "Nebius AI": "https://nebius.com/studio/inference",
-  "Nebius AI Fast": "https://nebius.com/studio/inference",
+  "Hyperbolic": "https://www.hyperbolic.xyz/?utm_source=llmshowdown",
+  "Amazon Bedrock": "https://aws.amazon.com/?utm_source=llmshowdown",
+  "OctoAI": "https://octo.ai/?utm_source=llmshowdown",
+  "Lepton AI": "https://www.lepton.ai/?utm_source=llmshowdown",
+  "Microsoft Azure": "https://azure.microsoft.com/?utm_source=llmshowdown",
+  "Fireworks": "https://fireworks.ai/?utm_source=llmshowdown",
+  "Deepinfra": "https://www.deepinfra.com/?utm_source=llmshowdown",
+  "Groq": "https://groq.com/?utm_source=llmshowdown",
+  "SambaNova": "https://sambanova.ai/?utm_source=llmshowdown",
+  "Databricks": "https://www.databricks.com/?utm_source=llmshowdown",
+  "Perplexity": "https://www.perplexity.ai/?utm_source=llmshowdown",
+  "Together.ai": "https://www.together.ai/?utm_source=llmshowdown",
+  "Cerebras": "https://www.cerebras.ai/?utm_source=llmshowdown",
+  "Nebius AI": "https://nebius.com/studio/inference/?utm_source=llmshowdown",
+  "Nebius AI Fast": "https://nebius.com/studio/inference/?utm_source=llmshowdown",
   // Add other providers as needed
 };
 
