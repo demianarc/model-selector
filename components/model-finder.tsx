@@ -586,60 +586,6 @@ const useCaseBenchmarks = {
   ]
 } as const;
 
-const calculateModelScore = (model: Model, useCase: keyof typeof useCases, requirements: string[]) => {
-  // Base score from primary and secondary metrics
-  const { primaryMetrics, secondaryMetrics } = useCases[useCase]
-  
-  let useCaseScore = 0
-  primaryMetrics.forEach(metric => {
-    const score = metric === 'chatbotArena' 
-      ? (model[metric] / 1500) * 100
-      : model[metric as keyof Model] as number
-    useCaseScore += score * benchmarkWeights.useCase_specific.primary
-  })
-  
-  secondaryMetrics.forEach(metric => {
-    const score = metric === 'chatbotArena'
-      ? (model[metric] / 1500) * 100
-      : model[metric as keyof Model] as number
-    useCaseScore += score * benchmarkWeights.useCase_specific.secondary
-  })
-
-  // Normalize use case score
-  useCaseScore /= (primaryMetrics.length * benchmarkWeights.useCase_specific.primary + 
-                   secondaryMetrics.length * benchmarkWeights.useCase_specific.secondary)
-
-  // Requirements scoring with weighted importance
-  let requirementsScore = 0
-  requirements.forEach(req => {
-    switch (req) {
-      case 'latency_sensitive':
-        const sizeScore = model.size === 'Small' ? 100 : 
-                         model.size === 'Medium' ? 70 : 30
-        const perfScore = (model.humaneval + model.evalplus) / 2
-        requirementsScore += (sizeScore * 0.6 + perfScore * 0.4)
-        break
-      case 'general_knowledge':
-        requirementsScore += model.mmlu
-        break
-      case 'long_context':
-        requirementsScore += Math.min((model.contextWindow / 128) * 100, 100)
-        break
-      case 'multimodal':
-        requirementsScore += model.multimodal ? 100 : 0
-        break
-    }
-  })
-  requirementsScore /= requirements.length || 1
-
-  // Final weighted score
-  return {
-    total: (useCaseScore * 0.6) + (requirementsScore * 0.4),
-    useCase: useCaseScore,
-    requirements: requirementsScore
-  }
-}
-
 export default function ModelSelector() {
   const [currentStep, setCurrentStep] = useState(0)
   const [selections, setSelections] = useState<Record<string, string | string[]>>({})
@@ -669,8 +615,7 @@ export default function ModelSelector() {
     const useCase = steps[0].options.find(opt => opt.id === selections.use_case)?.title as keyof typeof useCases
     const modelRequirements = selections.model_requirements as string[]
 
-    // Filter models based on hard requirements first
-    let filteredModels = models.filter(model => {
+    const filteredModels = models.filter(model => {
       if (modelRequirements.includes('multimodal') && !model.multimodal) {
         return false
       }
