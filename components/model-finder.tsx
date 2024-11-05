@@ -182,54 +182,54 @@ const useCases = {
 
 const benchmarkWeights = {
   useCase_specific: {
-    primary: 2.0,
-    secondary: 1.0
+    primary: 2,
+    secondary: 1
   },
-  requirements: 1.5
-}
+  requirements: 1
+};
 
 const steps: Step[] = [
   {
     id: "use_case",
     question: "What's your primary use case?",
-    description: "Select the main area you'll be using the AI model for",
+    description: "Select the main purpose for using the AI model",
     options: [
       {
-        id: "chatbots",
+        id: "chatbot",
         title: "Chatbots and Conversational AI",
-        description: "Building interactive chatbots and conversational interfaces",
+        description: "Build interactive chatbots and conversational agents",
         icon: MessageSquare
       },
       {
-        id: "content_generation",
+        id: "content",
         title: "Content Generation",
-        description: "Creating articles, stories, or marketing copy",
+        description: "Create various types of content and creative writing",
         icon: Sparkles
       },
       {
-        id: "code_assistance",
+        id: "code",
         title: "Code Assistance and Development",
-        description: "Writing, analyzing, or debugging code",
+        description: "Help with coding, debugging, and development tasks",
         icon: Code
       },
       {
-        id: "text_summarization",
+        id: "summarization",
         title: "Text Summarization and Information Extraction",
-        description: "Condensing long texts and extracting key information",
-        icon: Laptop
+        description: "Summarize documents and extract key information",
+        icon: Trophy
       },
       {
-        id: "research_analysis",
+        id: "research",
         title: "Research and Data Analysis",
-        description: "Analyzing scientific papers, data sets, or conducting research",
+        description: "Analyze data and assist with research tasks",
         icon: Microscope
       }
     ]
   },
   {
     id: "model_requirements",
-    question: "What are your model requirements?",
-    description: "Select all that apply to your needs",
+    question: "Any specific requirements?",
+    description: "Select all that apply",
     options: [
       {
         id: "general_knowledge",
@@ -238,9 +238,9 @@ const steps: Step[] = [
         icon: Globe
       },
       {
-        id: "fast_inference",
-        title: "Fast Inference",
-        description: "Optimize for quick responses in real-time applications",
+        id: "latency_sensitive",
+        title: "Latency Sensitive",
+        description: "Optimize for quick responses and efficient resource usage",
         icon: Zap
       },
       {
@@ -254,17 +254,11 @@ const steps: Step[] = [
         title: "Visual Understanding",
         description: "Process and analyze both text and images",
         icon: ImageIcon
-      },
-      {
-        id: "efficiency",
-        title: "Resource Efficiency",
-        description: "Suitable for deployment with limited computational resources",
-        icon: Laptop
       }
     ],
     multiple: true
   }
-]
+];
 
 const benchmarks: Record<string, Benchmark> = {
   mmlu: {
@@ -549,7 +543,7 @@ type UseCase = keyof typeof useCases;
 
 type RecommendationCategory =
   | UseCase
-  | "Fast Processing"
+  | "Latency Optimized"
   | "Complex Processing"
   | "Balanced Performance"
   | "Long Context Support"
@@ -559,7 +553,7 @@ type RecommendationCategory =
 
 // Add this with your other constants (around line 160-180)
 const modelCategories = {
-  FAST_INFERENCE: "Fast Processing" as RecommendationCategory,
+  LATENCY_OPTIMIZED: "Latency Optimized" as RecommendationCategory,
   COMPLEX_TASKS: "Complex Processing" as RecommendationCategory,
   BALANCED: "Balanced Performance" as RecommendationCategory,
   LONG_CONTEXT: "Long Context Support" as RecommendationCategory,
@@ -567,6 +561,84 @@ const modelCategories = {
   BASIC: "Basic Performance" as RecommendationCategory,
   LIMITED: "Limited Capabilities" as RecommendationCategory
 } as const;
+
+// Add this after the useCases definition
+const useCaseBenchmarks = {
+  "Chatbots and Conversational AI": [
+    { key: "chatbotArena", name: "Communication", icon: MessageSquare, description: "Conversational ability" },
+    { key: "mt_bench", name: "MT-Bench", icon: MessageSquare, description: "Multi-turn conversation quality" }
+  ],
+  "Code Assistance and Development": [
+    { key: "humaneval", name: "HumanEval", icon: Code, description: "Code generation ability" },
+    { key: "evalplus", name: "EvalPlus", icon: Code, description: "Advanced coding tasks" }
+  ],
+  "Content Generation": [
+    { key: "mmlu", name: "Knowledge", icon: Brain, description: "General knowledge" },
+    { key: "ifeval", name: "Writing", icon: Sparkles, description: "Text generation quality" }
+  ],
+  "Text Summarization and Information Extraction": [
+    { key: "arc_challenge", name: "Comprehension", icon: Brain, description: "Reading comprehension" },
+    { key: "mmlu", name: "Knowledge", icon: Brain, description: "General knowledge" }
+  ],
+  "Research and Data Analysis": [
+    { key: "gpqa", name: "Research", icon: Microscope, description: "Scientific reasoning" },
+    { key: "math", name: "Mathematics", icon: Calculator, description: "Mathematical ability" }
+  ]
+} as const;
+
+const calculateModelScore = (model: Model, useCase: keyof typeof useCases, requirements: string[]) => {
+  // Base score from primary and secondary metrics
+  const { primaryMetrics, secondaryMetrics } = useCases[useCase]
+  
+  let useCaseScore = 0
+  primaryMetrics.forEach(metric => {
+    const score = metric === 'chatbotArena' 
+      ? (model[metric] / 1500) * 100
+      : model[metric as keyof Model] as number
+    useCaseScore += score * benchmarkWeights.useCase_specific.primary
+  })
+  
+  secondaryMetrics.forEach(metric => {
+    const score = metric === 'chatbotArena'
+      ? (model[metric] / 1500) * 100
+      : model[metric as keyof Model] as number
+    useCaseScore += score * benchmarkWeights.useCase_specific.secondary
+  })
+
+  // Normalize use case score
+  useCaseScore /= (primaryMetrics.length * benchmarkWeights.useCase_specific.primary + 
+                   secondaryMetrics.length * benchmarkWeights.useCase_specific.secondary)
+
+  // Requirements scoring with weighted importance
+  let requirementsScore = 0
+  requirements.forEach(req => {
+    switch (req) {
+      case 'latency_sensitive':
+        const sizeScore = model.size === 'Small' ? 100 : 
+                         model.size === 'Medium' ? 70 : 30
+        const perfScore = (model.humaneval + model.evalplus) / 2
+        requirementsScore += (sizeScore * 0.6 + perfScore * 0.4)
+        break
+      case 'general_knowledge':
+        requirementsScore += model.mmlu
+        break
+      case 'long_context':
+        requirementsScore += Math.min((model.contextWindow / 128) * 100, 100)
+        break
+      case 'multimodal':
+        requirementsScore += model.multimodal ? 100 : 0
+        break
+    }
+  })
+  requirementsScore /= requirements.length || 1
+
+  // Final weighted score
+  return {
+    total: (useCaseScore * 0.6) + (requirementsScore * 0.4),
+    useCase: useCaseScore,
+    requirements: requirementsScore
+  }
+}
 
 export default function ModelSelector() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -605,7 +677,7 @@ export default function ModelSelector() {
           case 'general_knowledge':
             if (model.size === 'Large' || model.mmlu > 75) requirementsMetCount++
             break
-          case 'fast_inference':
+          case 'latency_sensitive':
             if (model.size === 'Small' || model.size === 'Medium') requirementsMetCount++
             break
           case 'long_context':
@@ -613,9 +685,6 @@ export default function ModelSelector() {
             break
           case 'multimodal':
             if (model.multimodal) requirementsMetCount++
-            break
-          case 'efficiency':
-            if (model.size === 'Small' || model.size === 'Medium') requirementsMetCount++
             break
         }
       })
@@ -680,19 +749,16 @@ export default function ModelSelector() {
           case 'general_knowledge':
             requirementsScore += (model.mmlu / 100) * 100 // Normalize to 0-100
             break
-          case 'fast_inference':
-            requirementsScore += model.size === 'Small' ? 100 : model.size === 'Medium' ? 70 : 40
+          case 'latency_sensitive':
+            const sizeScore = model.size === 'Small' ? 100 : model.size === 'Medium' ? 70 : 40
+            const benchmarkScore = (model.humaneval + model.evalplus) / 2
+            requirementsScore += (sizeScore * 0.7 + benchmarkScore * 0.3)
             break
           case 'long_context':
             requirementsScore += Math.min((model.contextWindow / 256) * 100, 100) // Cap at 100
             break
           case 'multimodal':
             requirementsScore += model.multimodal ? 100 : 0
-            break
-          case 'efficiency':
-            const sizeScore = model.size === 'Small' ? 100 : model.size === 'Medium' ? 70 : 40
-            const benchmarkScore = (model.humaneval + model.evalplus) / 2
-            requirementsScore += (sizeScore * 0.6 + benchmarkScore * 0.4)
             break
         }
       })
@@ -889,36 +955,34 @@ export default function ModelSelector() {
                           <div>
                             <h4 className="font-medium mb-2">Key Benchmarks:</h4>
                             <div className="grid grid-cols-2 gap-4">
-                              <div className="space-y-2">
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger className="flex items-center gap-1">
-                                      <Brain className="w-4 h-4" />
-                                      <span>Reasoning (MMLU)</span>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Tests knowledge and reasoning across multiple subjects</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                                <Progress value={result.model.mmlu} className="h-2" />
-                                <div className="text-sm font-medium">{result.model.mmlu}%</div>
-                              </div>
-                              <div className="space-y-2">
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger className="flex items-center gap-1">
-                                      <MessageSquare className="w-4 h-4" />
-                                      <span>Communication</span>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Measures conversational ability and natural language understanding</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                                <Progress value={result.model.chatbotArena / 1.5} className="h-2" />
-                                <div className="text-sm font-medium">{result.model.chatbotArena} ELO</div>
-                              </div>
+                              {useCaseBenchmarks[steps[0].options.find(opt => 
+                                opt.id === selections.use_case)?.title as keyof typeof useCases]
+                                .map(benchmark => (
+                                <div key={benchmark.key} className="space-y-2">
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger className="flex items-center gap-1">
+                                        <benchmark.icon className="w-4 h-4" />
+                                        <span>{benchmark.name}</span>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>{benchmark.description}</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                  <Progress 
+                                    value={benchmark.key === 'chatbotArena' 
+                                      ? result.model[benchmark.key] / 15 
+                                      : result.model[benchmark.key as keyof Model]} 
+                                    className="h-2" 
+                                  />
+                                  <div className="text-sm font-medium">
+                                    {benchmark.key === 'chatbotArena' 
+                                      ? `${result.model[benchmark.key]} ELO`
+                                      : `${result.model[benchmark.key as keyof Model]}%`}
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           </div>
                           <div>
