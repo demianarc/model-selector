@@ -669,62 +669,16 @@ export default function ModelSelector() {
     const useCase = steps[0].options.find(opt => opt.id === selections.use_case)?.title as keyof typeof useCases
     const modelRequirements = selections.model_requirements as string[]
 
-    // Score all models first
-    const scoredModels = models.map(model => {
-      let requirementsMetCount = 0
-      modelRequirements.forEach(req => {
-        switch (req) {
-          case 'general_knowledge':
-            if (model.size === 'Large' || model.mmlu > 75) requirementsMetCount++
-            break
-          case 'latency_sensitive':
-            if (model.size === 'Small' || model.size === 'Medium') requirementsMetCount++
-            break
-          case 'long_context':
-            if (model.contextWindow >= 32) requirementsMetCount++
-            break
-          case 'multimodal':
-            if (model.multimodal) requirementsMetCount++
-            break
-        }
-      })
-      return { model, requirementsMetCount }
+    // Filter models based on hard requirements first
+    let filteredModels = models.filter(model => {
+      if (modelRequirements.includes('multimodal') && !model.multimodal) {
+        return false
+      }
+      return true
     })
 
-    // Sort by requirements met and get the top matches
-    scoredModels.sort((a, b) => b.requirementsMetCount - a.requirementsMetCount)
-    const maxRequirementsMet = scoredModels[0].requirementsMetCount
-    
-    // Filter models that meet at least 50% of the max requirements met
-    const filteredModels = scoredModels
-      .filter(({ requirementsMetCount }) => 
-        requirementsMetCount >= Math.max(1, maxRequirementsMet * 0.5))
-      .map(({ model }) => model)
-
-    // If we still have no matches, take the top 3 models by overall benchmark scores
-    if (filteredModels.length === 0) {
-      const backupModels = [...models].sort((a, b) => {
-        const aScore = (a.mmlu + a.humaneval + a.chatbotArena/15) / 3
-        const bScore = (b.mmlu + b.humaneval + b.chatbotArena/15) / 3
-        return bScore - aScore
-      }).slice(0, 3)
-      return setResults(backupModels.map(model => ({
-        model,
-        scores: {
-          total: 70,
-          useCase: 65,
-          requirements: 75
-        },
-        strengths: ['Balanced performance'],
-        recommendations: {
-          bestFor: [useCase, modelCategories.BASIC],
-          limitations: [modelCategories.LIMITED]
-        }
-      })))
-    }
-
-    // Continue with existing ranking logic for filtered models
-    const rankedModels: EnhancedResult[] = filteredModels.map(model => {
+    // Score the filtered models
+    const scoredModels = filteredModels.map(model => {
       const { primaryMetrics, secondaryMetrics } = useCases[useCase]
       
       let useCaseScore = 0
@@ -813,9 +767,12 @@ export default function ModelSelector() {
       }
     })
 
-    rankedModels.sort((a, b) => b.scores.total - a.scores.total)
+    // Sort by total score and take top 3 (or fewer if not enough models meet requirements)
+    const topResults = scoredModels
+      .sort((a, b) => b.scores.total - a.scores.total)
+      .slice(0, Math.min(3, scoredModels.length))
 
-    setResults(rankedModels.slice(0, 3))
+    setResults(topResults.length > 0 ? topResults : null)
   }
 
   return (
@@ -823,8 +780,11 @@ export default function ModelSelector() {
       <CardHeader className="text-center">
         <CardTitle className="flex items-center justify-center gap-2 text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-600">
           <Brain className="w-10 h-10" />
-          AI Model Finder v5
+          AI Model Finder
         </CardTitle>
+        <p className="text-sm text-muted-foreground mt-2">
+          Find the perfect AI model for your needs. A fun experiment to help you navigate the world of open-source AI models (v1). More models to be added soon.
+        </p>
       </CardHeader>
       <CardContent className="space-y-8">
         <AnimatePresence mode="wait">
@@ -900,14 +860,26 @@ export default function ModelSelector() {
               transition={{ duration: 0.5 }}
               className="space-y-8"
             >
-              <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-semibold flex items-center gap-2">
-                  <Trophy className="w-8 h-8 text-yellow-500" />
-                  Recommended Models
-                </h2>
-                <Badge variant="secondary" className="text-lg px-3 py-1">
-                  Top {results.length} matches
-                </Badge>
+              <div className="mb-6">
+                <h2 className="text-2xl font-semibold mb-2">Recommended Models</h2>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="text-sm text-muted-foreground">
+                    <span className="font-medium">Use Case:</span>{' '}
+                    {steps[0].options.find(opt => opt.id === selections.use_case)?.title}
+                  </div>
+                  {selections.model_requirements && (
+                    <>
+                      <div className="text-sm text-muted-foreground mx-2">•</div>
+                      <div className="text-sm text-muted-foreground">
+                        <span className="font-medium">Requirements:</span>{' '}
+                        {(selections.model_requirements as string[])
+                          .map(req => steps[1].options.find(opt => opt.id === req)?.title)
+                          .join(', ')}
+                      </div>
+                    </>
+                  )}
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">Top 3 matches</p>
               </div>
 
               <div className="grid gap-6">
