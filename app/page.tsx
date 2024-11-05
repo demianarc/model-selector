@@ -1,9 +1,9 @@
-import ClientAIModelShowdown from './components/client-ai-model-showdown'
+import ModelFinder from '@/components/model-finder'
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
-      <ClientAIModelShowdown />
-    </div>
+    <main className="container mx-auto py-8 px-4">
+      <ModelFinder />
+    </main>
   )
 }
