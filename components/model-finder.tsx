@@ -732,7 +732,7 @@ export default function ModelSelector() {
       };
 
       if (model.size === 'Small') {
-        recommendations.bestFor.push(modelCategories.FAST_INFERENCE);
+        recommendations.bestFor.push(modelCategories.LATENCY_OPTIMIZED);
       } else if (model.size === 'Large') {
         recommendations.bestFor.push(modelCategories.COMPLEX_TASKS);
       } else {
@@ -944,8 +944,8 @@ export default function ModelSelector() {
                                   </TooltipProvider>
                                   <Progress 
                                     value={benchmark.key === 'chatbotArena' 
-                                      ? result.model[benchmark.key] / 15 
-                                      : result.model[benchmark.key as keyof Model]} 
+                                      ? (result.model[benchmark.key] as number) / 15 
+                                      : (result.model[benchmark.key as keyof Model] as number)} 
                                     className="h-2" 
                                   />
                                   <div className="text-sm font-medium">
