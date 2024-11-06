@@ -566,25 +566,55 @@ const modelCategories = {
 const useCaseBenchmarks = {
   "Chatbots and Conversational AI": [
     { key: "chatbotArena", name: "Communication", icon: MessageSquare, description: "Conversational ability" },
-    { key: "mt_bench", name: "MT-Bench", icon: MessageSquare, description: "Multi-turn conversation quality" }
-  ],
-  "Code Assistance and Development": [
-    { key: "humaneval", name: "HumanEval", icon: Code, description: "Code generation ability" },
-    { key: "evalplus", name: "EvalPlus", icon: Code, description: "Advanced coding tasks" }
+    { key: "mt_bench", name: "Translation", icon: Globe, description: "Language understanding" },
+    { key: "ifeval", name: "Steerability", icon: Sparkles, description: "Instruction following" },
+    { key: "mmlu", name: "Knowledge", icon: Brain, description: "General knowledge" }
   ],
   "Content Generation": [
     { key: "mmlu", name: "Knowledge", icon: Brain, description: "General knowledge" },
-    { key: "ifeval", name: "Writing", icon: Sparkles, description: "Text generation quality" }
+    { key: "ifeval", name: "Steerability", icon: Sparkles, description: "Text generation quality" },
+    { key: "arc_challenge", name: "Comprehension", icon: Brain, description: "Reading comprehension" },
+    { key: "chatbotArena", name: "Communication", icon: MessageSquare, description: "Conversational ability" }
   ],
   "Text Summarization and Information Extraction": [
     { key: "arc_challenge", name: "Comprehension", icon: Brain, description: "Reading comprehension" },
-    { key: "mmlu", name: "Knowledge", icon: Brain, description: "General knowledge" }
+    { key: "mmlu", name: "Knowledge", icon: Brain, description: "General knowledge" },
+    { key: "ifeval", name: "Steerability", icon: Sparkles, description: "Text generation quality" },
+    { key: "chatbotArena", name: "Communication", icon: MessageSquare, description: "Conversational ability" }
   ],
   "Research and Data Analysis": [
     { key: "gpqa", name: "Research", icon: Microscope, description: "Scientific reasoning" },
-    { key: "math", name: "Mathematics", icon: Calculator, description: "Mathematical ability" }
+    { key: "math", name: "Mathematics", icon: Calculator, description: "Mathematical ability" },
+    { key: "gsm8k", name: "Applied Math", icon: Calculator, description: "Grade school math problems" }
   ]
 } as const;
+
+// Modify the applyRequirementFilters function
+const applyRequirementFilters = (models: Model[], requirements: string[]): Model[] => {
+  return models.filter(model => {
+    for (const requirement of requirements) {
+      switch (requirement) {
+        case 'general_knowledge':
+          if (requirements.includes('latency_sensitive')) {
+            if (model.size === 'Large') return false;
+          } else {
+            if (model.size === 'Small') return false;
+          }
+          break;
+        case 'latency_sensitive':
+          if (!requirements.includes('general_knowledge') && model.size === 'Large') return false;
+          break;
+        case 'long_context':
+          if (model.contextWindow < 128) return false;
+          break;
+        case 'multimodal':
+          if (!model.multimodal) return false;
+          break;
+      }
+    }
+    return true;
+  });
+};
 
 export default function ModelSelector() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -595,11 +625,12 @@ export default function ModelSelector() {
     setSelections(prev => {
       if (steps[currentStep].multiple) {
         const current = prev[stepId] as string[] || []
+        const newSelections = current.includes(optionId)
+          ? current.filter(id => id !== optionId)
+          : [...current, optionId]
         return {
           ...prev,
-          [stepId]: current.includes(optionId)
-            ? current.filter(id => id !== optionId)
-            : [...current, optionId]
+          [stepId]: newSelections
         }
       } else {
         return { ...prev, [stepId]: optionId }
@@ -612,17 +643,21 @@ export default function ModelSelector() {
   }
 
   const calculateResults = () => {
-    const useCase = steps[0].options.find(opt => opt.id === selections.use_case)?.title as keyof typeof useCases
-    const modelRequirements = selections.model_requirements as string[]
+    const useCase = steps[0].options.find(opt => 
+      opt.id === selections.use_case)?.title as keyof typeof useCases;
+    const modelRequirements = selections.model_requirements as string[];
 
-    const filteredModels = models.filter(model => {
-      if (modelRequirements.includes('multimodal') && !model.multimodal) {
-        return false
-      }
-      return true
-    })
+    // Apply hard filters first
+    const filteredModels = applyRequirementFilters(models, modelRequirements);
 
-    // Score the filtered models
+    // If no models meet the requirements, return early
+    if (filteredModels.length === 0) {
+      setResults(null);
+      // Optionally: Add some UI feedback about no models meeting all requirements
+      return;
+    }
+
+    // Continue with scoring of filtered models
     const scoredModels = filteredModels.map(model => {
       const { primaryMetrics, secondaryMetrics } = useCases[useCase]
       
@@ -749,38 +784,43 @@ export default function ModelSelector() {
 
               <div className="grid gap-4">
                 {steps[currentStep].options.map((option) => (
-                  <button
-                    key={option.id}
-                    onClick={() => handleSelection(steps[currentStep].id, option.id)}
-                    className={`w-full text-left p-6 rounded-lg border-2 transition-all hover:border-blue-300 hover:bg-blue-50/50
-                      ${Array.isArray(selections[steps[currentStep].id])
-                        ? (selections[steps[currentStep].id] as string[]).includes(option.id)
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200'
-                        : selections[steps[currentStep].id] === option.id
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200'
-                      }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <option.icon className="w-6 h-6 text-blue-500" />
-                        <div>
-                          <h3 className="font-medium">{option.title}</h3>
-                          <p className="text-sm text-muted-foreground">{option.description}</p>
-                        </div>
-                      </div>
-                      {steps[currentStep].multiple ? (
-                        <Checkbox
-                          checked={(selections[steps[currentStep].id] as string[] || []).includes(option.id)}
-                          onCheckedChange={() => handleSelection(steps[currentStep].id, option.id)}
-                          className="h-5 w-5"
-                        />
-                      ) : (
-                        <ArrowRight className="w-5 h-5 text-muted-foreground" />
-                      )}
-                    </div>
-                  </button>
+                  <TooltipProvider key={option.id}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => handleSelection(steps[currentStep].id, option.id)}
+                          className={`w-full text-left p-6 rounded-lg border-2 transition-all
+                            ${Array.isArray(selections[steps[currentStep].id])
+                              ? (selections[steps[currentStep].id] as string[]).includes(option.id)
+                                ? 'border-blue-500 bg-blue-50'
+                                : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/50'
+                              : selections[steps[currentStep].id] === option.id
+                                ? 'border-blue-500 bg-blue-50'
+                                : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/50'
+                            }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <option.icon className="w-6 h-6 text-blue-500" />
+                              <div>
+                                <h3 className="font-medium">{option.title}</h3>
+                                <p className="text-sm text-muted-foreground">{option.description}</p>
+                              </div>
+                            </div>
+                            {steps[currentStep].multiple ? (
+                              <Checkbox
+                                checked={(selections[steps[currentStep].id] as string[] || []).includes(option.id)}
+                                onCheckedChange={() => handleSelection(steps[currentStep].id, option.id)}
+                                className="h-5 w-5"
+                              />
+                            ) : (
+                              <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                            )}
+                          </div>
+                        </button>
+                      </TooltipTrigger>
+                    </Tooltip>
+                  </TooltipProvider>
                 ))}
               </div>
 
@@ -873,8 +913,8 @@ export default function ModelSelector() {
                             <h4 className="font-medium mb-2">Key Benchmarks:</h4>
                             <div className="grid grid-cols-2 gap-4">
                               {useCaseBenchmarks[steps[0].options.find(opt => 
-                                opt.id === selections.use_case)?.title as keyof typeof useCases]
-                                .map(benchmark => (
+                                opt.id === selections.use_case)?.title as keyof typeof useCaseBenchmarks]
+                                ?.map(benchmark => (
                                 <div key={benchmark.key} className="space-y-2">
                                   <TooltipProvider>
                                     <Tooltip>
