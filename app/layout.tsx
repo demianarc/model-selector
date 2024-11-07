@@ -3,8 +3,8 @@ import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'AI Model Finder',
-  description: 'Find the perfect AI model for your needs. A fun experiment to help you navigate the world of open-source AI models (v1).',
+  title: 'LLM Selector',
+  description: 'Find the perfect Open Source AI model and LLM for your needs. A fun experiment to help you navigate the world of open-source AI models (v1).',
 }
 
 export default function RootLayout({

@@ -766,14 +766,15 @@ export default function ModelSelector() {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto bg-gradient-to-br from-slate-50 to-slate-100 shadow-xl">
+    <Card className="w-full max-w-4xl mx-auto bg-gradient-to-br from-slate-50 to-blue-50/30 shadow-xl">
       <CardHeader className="text-center">
         <CardTitle className="flex items-center justify-center gap-2 text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-600">
           <Brain className="w-10 h-10" />
-          AI Model Finder
+          LLM Selector
         </CardTitle>
         <p className="text-sm text-muted-foreground mt-2">
-          Find the perfect AI model for your needs. A fun experiment to help you navigate the world of open-source AI models (v1). More models to be added soon.
+          Find the perfect open source AI model / LLM for your needs. 
+          A fun experiment to help you navigate the world of open-source AI models (v1). More models to be added soon.
         </p>
       </CardHeader>
       <CardContent className="space-y-8">
