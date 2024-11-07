@@ -159,12 +159,13 @@ const modelToProviders: Record<string, ProviderInfo[]> = {
 // Data
 const useCases = {
   "Chatbots and Conversational AI": {
-    primaryMetrics: ["chatbotArena", "mt_bench"],
+    primaryMetrics: ["chatbotArena"],
     secondaryMetrics: ["mmlu", "ifeval"]
   },
   "Content Generation": {
     primaryMetrics: ["mmlu", "chatbotArena"],
-    secondaryMetrics: ["mt_bench", "ifeval"]
+    secondaryMetrics: ["ifeval", "mt_bench"],
+    description: "Create various types of content, including translations and creative writing"
   },
   "Code Assistance and Development": {
     primaryMetrics: ["humaneval", "evalplus"],
@@ -203,7 +204,7 @@ const steps: Step[] = [
       {
         id: "content",
         title: "Content Generation",
-        description: "Create various types of content and creative writing",
+        description: "Create various types of content, including translations and creative writing",
         icon: Sparkles
       },
       {
