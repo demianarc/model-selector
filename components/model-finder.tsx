@@ -576,6 +576,12 @@ const useCaseBenchmarks = {
     { key: "arc_challenge", name: "Comprehension", icon: Brain, description: "Reading comprehension" },
     { key: "chatbotArena", name: "Communication", icon: MessageSquare, description: "Conversational ability" }
   ],
+  "Code Assistance and Development": [
+    { key: "humaneval", name: "Coding", icon: Code, description: "Code generation" },
+    { key: "evalplus", name: "Advanced Coding", icon: Laptop, description: "Complex programming tasks" },
+    { key: "mmlu", name: "Knowledge", icon: Brain, description: "General knowledge" },
+    { key: "gpqa", name: "Scientific", icon: Microscope, description: "Technical reasoning" }
+  ],
   "Text Summarization and Information Extraction": [
     { key: "arc_challenge", name: "Comprehension", icon: Brain, description: "Reading comprehension" },
     { key: "mmlu", name: "Knowledge", icon: Brain, description: "General knowledge" },
@@ -680,13 +686,14 @@ export default function ModelSelector() {
       let requirementsScore = 0
       modelRequirements.forEach(req => {
         switch (req) {
+          case 'latency_sensitive':
+            // Heavily penalize larger models when latency is required
+            const sizeScore = model.size === 'Small' ? 100 : 
+                             model.size === 'Medium' ? 60 : 20;
+            requirementsScore += sizeScore;
+            break;
           case 'general_knowledge':
             requirementsScore += (model.mmlu / 100) * 100 // Normalize to 0-100
-            break
-          case 'latency_sensitive':
-            const sizeScore = model.size === 'Small' ? 100 : model.size === 'Medium' ? 70 : 40
-            const benchmarkScore = (model.humaneval + model.evalplus) / 2
-            requirementsScore += (sizeScore * 0.7 + benchmarkScore * 0.3)
             break
           case 'long_context':
             requirementsScore += Math.min((model.contextWindow / 256) * 100, 100) // Cap at 100
@@ -698,7 +705,10 @@ export default function ModelSelector() {
       })
       requirementsScore /= modelRequirements.length
 
-      const requirementsPriority = modelRequirements.length / 5 // 0.2 to 1.0
+      // Increase the weight of requirements score when latency is important
+      const requirementsPriority = modelRequirements.includes('latency_sensitive') 
+        ? 0.7  // Increase weight for latency requirement
+        : modelRequirements.length / 5;
       const totalScore = (useCaseScore * (1 - requirementsPriority * 0.5)) + 
                         (requirementsScore * (requirementsPriority * 0.5))
 
