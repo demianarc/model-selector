@@ -775,7 +775,7 @@ export default function ModelSelector() {
         </CardTitle>
         <p className="text-sm text-muted-foreground mt-2">
           Find the perfect open source AI model / LLM for your needs. 
-          A fun experiment to help you navigate the world of open-source AI models (v1). More models to be added soon.
+          A fun experiment by <a href="https://x.com/demian_ai" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">Dylan</a> to help you navigate the world of open-source AI models (v1). More models to be added soon.
         </p>
       </CardHeader>
       <CardContent className="space-y-8">
